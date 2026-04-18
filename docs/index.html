@@ -1,170 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>my-family-chart</title>
-  <script src="https://unpkg.com/d3@7"></script>
-  <script type="module" src="https://unpkg.com/family-chart@0.9.0"></script>
-  <link rel="stylesheet" href="https://unpkg.com/family-chart@0.9.0/dist/styles/family-chart.css">
-  <style>
-  body { 
-    font-family: 'Arial', sans-serif; 
-    margin: 0;
-    overflow: hidden; /* Prevents the whole page from bouncing */
-    width: 100%;
-    height: 100vh;
-  }
+<html lang="fa" dir="rtl">
+    <head>
+      <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>ورود به سیستم | تبار نما</title>
 
-  #FamilyChart {
-    width: 100%;
-    height: 100vh;
-    background-color: rgb(33, 33, 33);
-    color: #fff;
-    /* Allow the library to handle all touch logic */
-    touch-action: none; 
-    -webkit-user-select: none;
-    user-select: none;
-  }
-/* THIS FIXED THE PROBLEM ================={ */
- .f3-form-cont:not(.opened) {
-  display: none !important;
-}
+        <style>
+            body {
+                margin: 0;
+                font-family: 'Tahoma', sans-serif;
+                background: linear-gradient(135deg, #1e1e2f, #2c3e50);
+                color: #fff;
 
-.f3-form-cont.opened {
-  display: block !important;
-  width: min(80vw, 340px) !important;
-  max-width: 340px !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
-  transform: translateX(0);
-  transition: transform 0.3s ease;
-}
+                min-height: 100vh;   
+                padding: 20px;       
+                direction: rtl;
+            }
 
-/* }=================== */
-  .f3-edit-tree {
-    max-width: 340px !important;
-    width: 85vw !important;
-    /* Ensure the sidebar doesn't block touch events when hidden */
-    transition: transform 0.3s ease, opacity 0.3s ease !important;
-    z-index: 1000;
-  }
+            .auth-box {
+                background: rgba(255,255,255,0.05);
+                backdrop-filter: blur(10px);
 
-  /* Fix for the sidebar blocking interaction */
-  .f3-edit-tree.hidden {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
+                padding: 30px; 
+                border-radius: 15px;
 
-</style>
+                text-align: center;
+                box-shadow: 0 0 25px rgba(0,0,0,0.5);
+
+                max-width: 320px;
+                width: 100%;
+
+                animation: fadeIn 1.2s ease;
+            }
+
+            .auth-box input {
+                width: 100%;
+                box-sizing: border-box; 
+
+                padding: 12px;
+                border: none;
+                border-radius: 8px;
+
+                margin-bottom: 15px;
+                outline: none;
+
+                font-size: 14px;
+            }
+
+            .auth-box button {
+                width: 100%;
+                padding: 12px;
+
+                border: none;
+                border-radius: 8px;
+
+                background: #00adb5;
+                color: white;
+
+                cursor: pointer;
+                font-size: 16px;
+
+                transition: 0.3s;
+            }
+
+            /* Touch feedback */
+            .auth-box button:active {
+                background: #008c94;
+                transform: scale(0.98);
+            }
+
+            .error {
+                color: #ff4d4d;
+                font-size: 13px;
+                display: none;
+                margin-top: 10px;
+            }
+
+            /* REAL mobile optimization */
+            /* @media (max-width: 480px) {
+                .auth-box {
+                    padding: 20px;
+                    border-radius: 12px;
+                }
+
+                .auth-box h1 {
+                    font-size: 20px;
+                }
+
+                .auth-box h2 {
+                    font-size: 16px;
+                }
+            } */
+
+            @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .error.show {
+            display: block;
+            animation: shake 0.3s;
+        }
+        </style>
 </head>
+
 <body>
-<div id="FamilyChart" class="f3" style="width:100%;height:900px;margin:auto;background-color:rgb(33,33,33);color:#fff;"></div>
-<script type="module">
 
-const isMobile = window.innerWidth <= 768;
+<div class="auth-box">
+    <h1 style="color:#00adb5;">تبار نما</h1> <br> <hr>
+    <h2> ورود به سامانه</h2>
 
-create(data())
-let chartInstance;
-function create(data) {
-  // if (chartInstance) return; // prevent double init
+    <input type="text" id="user" placeholder="نام کاربری..." />
 
-  const f3Chart = f3.createChart('#FamilyChart', data)
-    .setTransitionTime(1000)
-    .setCardXSpacing(250)
-    .setCardYSpacing(150)
-    .setSingleParentEmptyCard(true, {label: 'ADD'})
-    .setShowSiblingsOfMain(false)
-    .setOrientationVertical()
+    <input type="password" id="pass" placeholder="گذرواژه را وارد کنید..." />
+    <button onclick="checkPass()">ورود</button>
 
-  const f3Card = f3Chart.setCardHtml()
-    .setCardDisplay([["first name","last name"],["birthday"]])
-    .setCardDim(null)
-    .setMiniTree(true)
-    .setStyle('imageRect')
-    .setOnHoverPathToMain()
+    <div class="error" id="err">نام کاربری یا گذرواژه نادرست!</div>
+</div>
 
-  
-  const f3EditTree = f3Chart.editTree()
-    .fixed(false)
-    .setFields(["first name","last name","birthday","avatar"])
-    .setEditFirst(false)
-    .setCardClickOpen(f3Card)
-  
-  f3EditTree.setNoEdit()
+<script>
+    document.getElementById("user").focus();
+    function checkPass() {
+        const USR = "u";
+        const PWD = "p";
 
-  if(!isMobile) {
-    f3EditTree.open(f3Chart.getMainDatum())
-  }
+        const user = document.getElementById("user").value;
+        const pass = document.getElementById("pass").value;
+        const err = document.getElementById("err");
 
-  const container = document.querySelector('#FamilyChart');
-  const editTreeEl = document.querySelector('.f3-edit-tree');
+        if (user === USR && pass === PWD) {
+            sessionStorage.setItem("auth", "ok");
+            window.location.href = "secret-9xK2.html"; // <-- [CHANGE] Secret page here.
+        } else {
+            err.classList.add("show");
+        }
 
-  function syncChartInteraction() {
-    const isEditOpen = editTreeEl && !editTreeEl.classList.contains('hidden');
-    container.style.pointerEvents = isEditOpen ? 'none' : 'all';
-  }
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    }
 
-  container.addEventListener('touchstart', () => {
-    const isEditOpen = editTreeEl && !editTreeEl.classList.contains('hidden');
-    container.style.pointerEvents = isEditOpen ? 'none' : 'all';
-  }, { passive: true });
+    document.getElementById("user").oninput =
+    document.getElementById("pass").oninput = () => {
+        document.getElementById("err").classList.remove("show");
+    };
 
-  if (editTreeEl) {
-    const observer = new MutationObserver(() => {
-      syncChartInteraction();
-      if (editTreeEl.classList.contains('hidden')) {
-        f3Chart.updateTree({ initial: false });
-      }
+    document.addEventListener("keypress", function(e){
+        if(e.key === "Enter") checkPass();
     });
-    observer.observe(editTreeEl, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  syncChartInteraction();
-  f3Chart.updateTree({initial: true})
-}
-
-function data() {
-  return [
-    {
-      "id": "0",
-      "rels": {
-        "spouses": ["01c6c0da-f674-449c-b88a-ee28b4957f09","239e1669-75ad-47bd-b96c-1837a7a9c9f0"],
-        "children": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0","689c6590-34bd-49b7-a610-302cd1c91e3e","8692a305-4004-4280-82de-99648846f918","9bf7483f-235e-4420-b1a0-21d81e79f5eb","5deda4e2-a020-46d6-bb0f-7ba2e9959f59","aebae191-9b8d-4f2e-bedc-b35ba1059ca7"]
-      },
-      "data": {
-        "first name": "Name",
-        "last name": "Surname",
-        "birthday": 1970,
-        "avatar": "https://static8.depositphotos.com/1009634/988/v/950/depositphotos_9883921-stock-illustration-no-user-profile-picture.jpg",
-        "gender": "M"
-      }
-    },
-    { "id": "01c6c0da-f674-449c-b88a-ee28b4957f09", "data": { "gender": "F", "first name": "sfdsafa", "last name": "", "birthday": "", "avatar": "" }, "rels": { "children": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "689c6590-34bd-49b7-a610-302cd1c91e3e", "aebae191-9b8d-4f2e-bedc-b35ba1059ca7"], "spouses": ["0"] } },
-    { "id": "239e1669-75ad-47bd-b96c-1837a7a9c9f0", "data": { "gender": "F", "first name": "sadf", "last name": "dff", "birthday": "er32", "avatar": "" }, "rels": { "children": ["8692a305-4004-4280-82de-99648846f918", "9bf7483f-235e-4420-b1a0-21d81e79f5eb", "5deda4e2-a020-46d6-bb0f-7ba2e9959f59"], "spouses": ["0"] } },
-    { "id": "c28fced7-29d6-4679-a7af-ad5abd83a2d0", "data": { "gender": "M", "first name": "sdfsadf", "last name": "werwr", "birthday": "23434", "avatar": "" }, "rels": { "parents": ["0", "01c6c0da-f674-449c-b88a-ee28b4957f09"], "children": ["2217a1d0-2192-44f0-8b9d-8cc423341010", "0db5a100-d1ae-48c6-99a1-ec90a7030b1c", "22886a23-c0b5-4eeb-9a88-1e87247bf022"], "spouses": ["dabd7576-1f19-491d-b89f-1f9900bb8f98"] } },
-    { "id": "689c6590-34bd-49b7-a610-302cd1c91e3e", "data": { "gender": "F", "first name": "23435", "last name": "345354", "birthday": "dsfg433", "avatar": "" }, "rels": { "parents": ["0", "01c6c0da-f674-449c-b88a-ee28b4957f09"] } },
-    { "id": "8692a305-4004-4280-82de-99648846f918", "data": { "gender": "M", "first name": "325", "last name": "erg", "birthday": "sfgd", "avatar": "" }, "rels": { "parents": ["0", "239e1669-75ad-47bd-b96c-1837a7a9c9f0"] } },
-    { "id": "9bf7483f-235e-4420-b1a0-21d81e79f5eb", "data": { "gender": "F", "first name": "tgr", "last name": "fbdf", "birthday": "534", "avatar": "" }, "rels": { "parents": ["0", "239e1669-75ad-47bd-b96c-1837a7a9c9f0"], "children": ["a048e44d-0fa6-4328-b562-2f7af53ac957", "13bf96ce-a837-4175-b80f-afe9539bc729"] } },
-    { "id": "5deda4e2-a020-46d6-bb0f-7ba2e9959f59", "data": { "gender": "F", "first name": "jhg", "last name": "fjju", "birthday": "35325", "avatar": "" }, "rels": { "parents": ["239e1669-75ad-47bd-b96c-1837a7a9c9f0", "0"] } },
-    { "id": "aebae191-9b8d-4f2e-bedc-b35ba1059ca7", "data": { "gender": "M", "first name": "kjdsg", "last name": "jfhjd", "birthday": "34532", "avatar": "" }, "rels": { "parents": ["01c6c0da-f674-449c-b88a-ee28b4957f09", "0"], "children": ["af34a06c-9ca4-4df3-9db9-0fcad3553256", "df04ecaf-c091-480f-a021-3f5f55060f14"], "spouses": ["23199287-43df-4022-9ce6-54bbb3b4cc53"] } },
-    { "id": "23199287-43df-4022-9ce6-54bbb3b4cc53", "data": { "gender": "F", "first name": "fhfd", "last name": "dkjshg", "birthday": "3245365", "avatar": "" }, "rels": { "children": ["af34a06c-9ca4-4df3-9db9-0fcad3553256", "df04ecaf-c091-480f-a021-3f5f55060f14"], "spouses": ["aebae191-9b8d-4f2e-bedc-b35ba1059ca7"] } },
-    { "id": "af34a06c-9ca4-4df3-9db9-0fcad3553256", "data": { "gender": "M", "first name": "436", "last name": "", "birthday": "", "avatar": "" }, "rels": { "parents": ["aebae191-9b8d-4f2e-bedc-b35ba1059ca7", "23199287-43df-4022-9ce6-54bbb3b4cc53"] } },
-    { "id": "df04ecaf-c091-480f-a021-3f5f55060f14", "data": { "gender": "M", "first name": "45trhryte", "last name": "dhgfd", "birthday": "345436", "avatar": "" }, "rels": { "parents": ["aebae191-9b8d-4f2e-bedc-b35ba1059ca7", "23199287-43df-4022-9ce6-54bbb3b4cc53"] } },
-    { "id": "a048e44d-0fa6-4328-b562-2f7af53ac957", "data": { "gender": "M", "first name": "dgdf", "last name": "dfdfh", "birthday": "dfh", "avatar": "" }, "rels": { "parents": ["9bf7483f-235e-4420-b1a0-21d81e79f5eb"] } },
-    { "id": "13bf96ce-a837-4175-b80f-afe9539bc729", "data": { "gender": "M", "first name": "dfh", "last name": "fgh", "birthday": "fdh", "avatar": "" }, "rels": { "parents": ["9bf7483f-235e-4420-b1a0-21d81e79f5eb"] } },
-    { "id": "dabd7576-1f19-491d-b89f-1f9900bb8f98", "data": { "gender": "F", "first name": "dfggd", "last name": "erte", "birthday": "erterwrt", "avatar": "" }, "rels": { "children": ["2217a1d0-2192-44f0-8b9d-8cc423341010", "0db5a100-d1ae-48c6-99a1-ec90a7030b1c", "22886a23-c0b5-4eeb-9a88-1e87247bf022"], "spouses": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0"] } },
-    { "id": "2217a1d0-2192-44f0-8b9d-8cc423341010", "data": { "gender": "M", "first name": "ertet", "last name": "ewrt", "birthday": "wet", "avatar": "" }, "rels": { "parents": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "dabd7576-1f19-491d-b89f-1f9900bb8f98"] } },
-    { "id": "0db5a100-d1ae-48c6-99a1-ec90a7030b1c", "data": { "gender": "F", "first name": "wet", "last name": "wet", "birthday": "wet", "avatar": "" }, "rels": { "parents": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "dabd7576-1f19-491d-b89f-1f9900bb8f98"] } },
-    { "id": "22886a23-c0b5-4eeb-9a88-1e87247bf022", "data": { "gender": "M", "first name": "ewt", "last name": "ewt", "birthday": "ewt", "avatar": "" }, "rels": { "parents": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "dabd7576-1f19-491d-b89f-1f9900bb8f98"], "children": ["bca63373-ff81-46d6-82f1-8ebdc68d4746"], "spouses": ["31c0d01f-b78c-4237-aba1-68b2e82dabeb"] } },
-    { "id": "31c0d01f-b78c-4237-aba1-68b2e82dabeb", "data": { "gender": "F", "first name": "ttt", "last name": "wew", "birthday": "er", "avatar": "" }, "rels": { "children": ["bca63373-ff81-46d6-82f1-8ebdc68d4746"], "spouses": ["22886a23-c0b5-4eeb-9a88-1e87247bf022"] } },
-    { "id": "bca63373-ff81-46d6-82f1-8ebdc68d4746", "data": { "gender": "F", "first name": "ert", "last name": "wet", "birthday": "ert", "avatar": "" }, "rels": { "parents": ["22886a23-c0b5-4eeb-9a88-1e87247bf022", "31c0d01f-b78c-4237-aba1-68b2e82dabeb"], "children": ["59058cf0-39cb-43a7-b2a0-bc2673c35101"], "spouses": ["fd8f65e1-865e-4b8f-9046-baf851fcbe90"] } },
-    { "id": "fd8f65e1-865e-4b8f-9046-baf851fcbe90", "data": { "gender": "M", "first name": "ertrewt", "last name": "te", "birthday": "ert", "avatar": "" }, "rels": { "children": ["59058cf0-39cb-43a7-b2a0-bc2673c35101"], "spouses": ["bca63373-ff81-46d6-82f1-8ebdc68d4746"] } },
-    { "id": "59058cf0-39cb-43a7-b2a0-bc2673c35101", "data": { "gender": "M", "first name": "ertert", "last name": "ertrete", "birthday": "ertretert", "avatar": "" }, "rels": { "parents": ["bca63373-ff81-46d6-82f1-8ebdc68d4746", "fd8f65e1-865e-4b8f-9046-baf851fcbe90"] } }
-  ];
-}
-
 
 </script>
+
 </body>
 </html>
