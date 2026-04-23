@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -8,6 +8,27 @@
   <script type="module" src="https://unpkg.com/family-chart@0.9.0"></script>
   <link rel="stylesheet" href="https://unpkg.com/family-chart@0.9.0/dist/styles/family-chart.css">
   <style>
+
+    #cr_note {
+      color: #448bd6;              /* soft modern blue */
+      text-decoration: none;       /* remove underline */
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      background: rgba(43, 108, 176, 0.08);
+    }
+
+    #cr_note:hover {
+      color: #366ca5;
+      background: rgba(43, 108, 176, 0.15);
+      transform: translateY(-1px);
+    }
+
+    #cr_note:active {
+      transform: scale(0.98);
+    }
+
   body { 
     font-family: 'Arial', sans-serif; 
     margin: 0;
@@ -56,6 +77,34 @@
     pointer-events: none !important;
   }
 
+  /* Alive/Dead indicator circle */
+.floating-footer {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  z-index: 999999;   /* make it very front */
+
+  max-width: 95vw;
+  padding: 6px 14px;
+  font-size: 12px;
+  text-align: center;
+
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 600px) {
+  .floating-footer {
+    font-size: 11px;
+    max-width: 92vw;   /* a bit wider on small screens */
+    padding: 6px 10px;
+  }
+}
 </style>
 </head>
 <body>
@@ -77,8 +126,13 @@ function create(data) {
     .setShowSiblingsOfMain(false)
     .setOrientationVertical()
 
-  const f3Card = f3Chart.setCardHtml()
-    .setCardDisplay([["first name","last name"],["birthday"]])
+const f3Card = f3Chart.setCardHtml()
+  .setCardDisplay([["نام","نام خانوادگی"],["زاد روز","زندگانی؟"]])
+
+  // .setCardHtmlExtra((d) => {
+  //   const status = d.data["زندگانی؟"] === "زنده" ? "alive" : "dead";
+  //   return `<div class="alive-status ${status}"></div>`;
+  // })
     .setCardDim(null)
     .setMiniTree(true)
     .setStyle('imageRect')
@@ -87,7 +141,7 @@ function create(data) {
   
   const f3EditTree = f3Chart.editTree()
     .fixed(false)
-    .setFields(["first name","last name","birthday","avatar"])
+    .setFields(["نام","نام خانوادگی","زاد روز","زندگانی؟","رشته تحصیلی","جایگاه تحصیلی","یاد داشت"])
     .setEditFirst(false)
     .setCardClickOpen(f3Card)
   
@@ -126,45 +180,633 @@ function create(data) {
 
 function data() {
   return [
-    {
-      "id": "0",
-      "rels": {
-        "spouses": ["01c6c0da-f674-449c-b88a-ee28b4957f09","239e1669-75ad-47bd-b96c-1837a7a9c9f0"],
-        "children": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0","689c6590-34bd-49b7-a610-302cd1c91e3e","8692a305-4004-4280-82de-99648846f918","9bf7483f-235e-4420-b1a0-21d81e79f5eb","5deda4e2-a020-46d6-bb0f-7ba2e9959f59","aebae191-9b8d-4f2e-bedc-b35ba1059ca7"]
-      },
-      "data": {
-        "first name": "Name",
-        "last name": "Surname",
-        "birthday": 1970,
-        "avatar": "https://static8.depositphotos.com/1009634/988/v/950/depositphotos_9883921-stock-illustration-no-user-profile-picture.jpg",
-        "gender": "M"
-      }
+  {
+    "id": "0",
+    "rels": {
+      "spouses": [
+        "33f7b359-32d3-47cb-b989-bfafb3544cb9"
+      ],
+      "children": [
+        "37f0a29d-a4f5-416a-a2c6-719f1b74478e",
+        "cf158fb8-200c-4397-8046-8eef01a4920e",
+        "1fed1985-ee17-4d6f-9417-659df4311393"
+      ]
     },
-    { "id": "01c6c0da-f674-449c-b88a-ee28b4957f09", "data": { "gender": "F", "first name": "sfdsafa", "last name": "", "birthday": "", "avatar": "" }, "rels": { "children": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "689c6590-34bd-49b7-a610-302cd1c91e3e", "aebae191-9b8d-4f2e-bedc-b35ba1059ca7"], "spouses": ["0"] } },
-    { "id": "239e1669-75ad-47bd-b96c-1837a7a9c9f0", "data": { "gender": "F", "first name": "sadf", "last name": "dff", "birthday": "er32", "avatar": "" }, "rels": { "children": ["8692a305-4004-4280-82de-99648846f918", "9bf7483f-235e-4420-b1a0-21d81e79f5eb", "5deda4e2-a020-46d6-bb0f-7ba2e9959f59"], "spouses": ["0"] } },
-    { "id": "c28fced7-29d6-4679-a7af-ad5abd83a2d0", "data": { "gender": "M", "first name": "sdfsadf", "last name": "werwr", "birthday": "23434", "avatar": "" }, "rels": { "parents": ["0", "01c6c0da-f674-449c-b88a-ee28b4957f09"], "children": ["2217a1d0-2192-44f0-8b9d-8cc423341010", "0db5a100-d1ae-48c6-99a1-ec90a7030b1c", "22886a23-c0b5-4eeb-9a88-1e87247bf022"], "spouses": ["dabd7576-1f19-491d-b89f-1f9900bb8f98"] } },
-    { "id": "689c6590-34bd-49b7-a610-302cd1c91e3e", "data": { "gender": "F", "first name": "23435", "last name": "345354", "birthday": "dsfg433", "avatar": "" }, "rels": { "parents": ["0", "01c6c0da-f674-449c-b88a-ee28b4957f09"] } },
-    { "id": "8692a305-4004-4280-82de-99648846f918", "data": { "gender": "M", "first name": "325", "last name": "erg", "birthday": "sfgd", "avatar": "" }, "rels": { "parents": ["0", "239e1669-75ad-47bd-b96c-1837a7a9c9f0"] } },
-    { "id": "9bf7483f-235e-4420-b1a0-21d81e79f5eb", "data": { "gender": "F", "first name": "tgr", "last name": "fbdf", "birthday": "534", "avatar": "" }, "rels": { "parents": ["0", "239e1669-75ad-47bd-b96c-1837a7a9c9f0"], "children": ["a048e44d-0fa6-4328-b562-2f7af53ac957", "13bf96ce-a837-4175-b80f-afe9539bc729"] } },
-    { "id": "5deda4e2-a020-46d6-bb0f-7ba2e9959f59", "data": { "gender": "F", "first name": "jhg", "last name": "fjju", "birthday": "35325", "avatar": "" }, "rels": { "parents": ["239e1669-75ad-47bd-b96c-1837a7a9c9f0", "0"] } },
-    { "id": "aebae191-9b8d-4f2e-bedc-b35ba1059ca7", "data": { "gender": "M", "first name": "kjdsg", "last name": "jfhjd", "birthday": "34532", "avatar": "" }, "rels": { "parents": ["01c6c0da-f674-449c-b88a-ee28b4957f09", "0"], "children": ["af34a06c-9ca4-4df3-9db9-0fcad3553256", "df04ecaf-c091-480f-a021-3f5f55060f14"], "spouses": ["23199287-43df-4022-9ce6-54bbb3b4cc53"] } },
-    { "id": "23199287-43df-4022-9ce6-54bbb3b4cc53", "data": { "gender": "F", "first name": "fhfd", "last name": "dkjshg", "birthday": "3245365", "avatar": "" }, "rels": { "children": ["af34a06c-9ca4-4df3-9db9-0fcad3553256", "df04ecaf-c091-480f-a021-3f5f55060f14"], "spouses": ["aebae191-9b8d-4f2e-bedc-b35ba1059ca7"] } },
-    { "id": "af34a06c-9ca4-4df3-9db9-0fcad3553256", "data": { "gender": "M", "first name": "436", "last name": "", "birthday": "", "avatar": "" }, "rels": { "parents": ["aebae191-9b8d-4f2e-bedc-b35ba1059ca7", "23199287-43df-4022-9ce6-54bbb3b4cc53"] } },
-    { "id": "df04ecaf-c091-480f-a021-3f5f55060f14", "data": { "gender": "M", "first name": "45trhryte", "last name": "dhgfd", "birthday": "345436", "avatar": "" }, "rels": { "parents": ["aebae191-9b8d-4f2e-bedc-b35ba1059ca7", "23199287-43df-4022-9ce6-54bbb3b4cc53"] } },
-    { "id": "a048e44d-0fa6-4328-b562-2f7af53ac957", "data": { "gender": "M", "first name": "dgdf", "last name": "dfdfh", "birthday": "dfh", "avatar": "" }, "rels": { "parents": ["9bf7483f-235e-4420-b1a0-21d81e79f5eb"] } },
-    { "id": "13bf96ce-a837-4175-b80f-afe9539bc729", "data": { "gender": "M", "first name": "dfh", "last name": "fgh", "birthday": "fdh", "avatar": "" }, "rels": { "parents": ["9bf7483f-235e-4420-b1a0-21d81e79f5eb"] } },
-    { "id": "dabd7576-1f19-491d-b89f-1f9900bb8f98", "data": { "gender": "F", "first name": "dfggd", "last name": "erte", "birthday": "erterwrt", "avatar": "" }, "rels": { "children": ["2217a1d0-2192-44f0-8b9d-8cc423341010", "0db5a100-d1ae-48c6-99a1-ec90a7030b1c", "22886a23-c0b5-4eeb-9a88-1e87247bf022"], "spouses": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0"] } },
-    { "id": "2217a1d0-2192-44f0-8b9d-8cc423341010", "data": { "gender": "M", "first name": "ertet", "last name": "ewrt", "birthday": "wet", "avatar": "" }, "rels": { "parents": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "dabd7576-1f19-491d-b89f-1f9900bb8f98"] } },
-    { "id": "0db5a100-d1ae-48c6-99a1-ec90a7030b1c", "data": { "gender": "F", "first name": "wet", "last name": "wet", "birthday": "wet", "avatar": "" }, "rels": { "parents": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "dabd7576-1f19-491d-b89f-1f9900bb8f98"] } },
-    { "id": "22886a23-c0b5-4eeb-9a88-1e87247bf022", "data": { "gender": "M", "first name": "ewt", "last name": "ewt", "birthday": "ewt", "avatar": "" }, "rels": { "parents": ["c28fced7-29d6-4679-a7af-ad5abd83a2d0", "dabd7576-1f19-491d-b89f-1f9900bb8f98"], "children": ["bca63373-ff81-46d6-82f1-8ebdc68d4746"], "spouses": ["31c0d01f-b78c-4237-aba1-68b2e82dabeb"] } },
-    { "id": "31c0d01f-b78c-4237-aba1-68b2e82dabeb", "data": { "gender": "F", "first name": "ttt", "last name": "wew", "birthday": "er", "avatar": "" }, "rels": { "children": ["bca63373-ff81-46d6-82f1-8ebdc68d4746"], "spouses": ["22886a23-c0b5-4eeb-9a88-1e87247bf022"] } },
-    { "id": "bca63373-ff81-46d6-82f1-8ebdc68d4746", "data": { "gender": "F", "first name": "ert", "last name": "wet", "birthday": "ert", "avatar": "" }, "rels": { "parents": ["22886a23-c0b5-4eeb-9a88-1e87247bf022", "31c0d01f-b78c-4237-aba1-68b2e82dabeb"], "children": ["59058cf0-39cb-43a7-b2a0-bc2673c35101"], "spouses": ["fd8f65e1-865e-4b8f-9046-baf851fcbe90"] } },
-    { "id": "fd8f65e1-865e-4b8f-9046-baf851fcbe90", "data": { "gender": "M", "first name": "ertrewt", "last name": "te", "birthday": "ert", "avatar": "" }, "rels": { "children": ["59058cf0-39cb-43a7-b2a0-bc2673c35101"], "spouses": ["bca63373-ff81-46d6-82f1-8ebdc68d4746"] } },
-    { "id": "59058cf0-39cb-43a7-b2a0-bc2673c35101", "data": { "gender": "M", "first name": "ertert", "last name": "ertrete", "birthday": "ertretert", "avatar": "" }, "rels": { "parents": ["bca63373-ff81-46d6-82f1-8ebdc68d4746", "fd8f65e1-865e-4b8f-9046-baf851fcbe90"] } }
-  ];
+    "data": {
+      "نام": "آقای بابا بزرگ",
+      "نام خانوادگی": "هرچه",
+      "زاد روز": "1300",
+      "avatar": "https://static8.depositphotos.com/1009634/988/v/950/depositphotos_9883921-stock-illustration-no-user-profile-picture.jpg",
+      "gender": "M",
+      "یاد داشت": "مرد با ایمان و فرزند دوست",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "پزشکی",
+      "جایگاه تحصیلی": "14"
+    }
+  },
+  {
+    "id": "33f7b359-32d3-47cb-b989-bfafb3544cb9",
+    "data": {
+      "gender": "F",
+      "نام": "بی بی بزرگ",
+      "نام خانوادگی": "هرچه",
+      "زاد روز": "1302",
+      "avatar": "",
+      "یاد داشت": "با هنر",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "بیسواد",
+      "جایگاه تحصیلی": "0"
+    },
+    "rels": {
+      "children": [
+        "37f0a29d-a4f5-416a-a2c6-719f1b74478e",
+        "cf158fb8-200c-4397-8046-8eef01a4920e",
+        "1fed1985-ee17-4d6f-9417-659df4311393"
+      ],
+      "spouses": [
+        "0"
+      ]
+    }
+  },
+  {
+    "id": "37f0a29d-a4f5-416a-a2c6-719f1b74478e",
+    "data": {
+      "gender": "M",
+      "نام": "بابا 1 ",
+      "نام خانوادگی": "هرچه زاده",
+      "زاد روز": "1320",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "مهندسی ساخت و ساز",
+      "جایگاه تحصیلی": "16"
+    },
+    "rels": {
+      "parents": [
+        "0",
+        "33f7b359-32d3-47cb-b989-bfafb3544cb9"
+      ],
+      "children": [
+        "8c7bf231-15ab-4e68-9b2a-6b98ee90ba8a",
+        "3ac83f80-fa50-428a-88f0-d2e898e6de40"
+      ],
+      "spouses": [
+        "971df12d-5e47-4fd4-a2e1-34524b028655"
+      ]
+    }
+  },
+  {
+    "id": "cf158fb8-200c-4397-8046-8eef01a4920e",
+    "data": {
+      "gender": "F",
+      "نام": "بی بی 2 ",
+      "نام خانوادگی": "هرچه زاده",
+      "زاد روز": "1321",
+      "avatar": "",
+      "یاد داشت": "بدون همسر",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "بیسواد",
+      "جایگاه تحصیلی": "0"
+    },
+    "rels": {
+      "parents": [
+        "0",
+        "33f7b359-32d3-47cb-b989-bfafb3544cb9"
+      ],
+      "children": [
+        "a1db2c06-87ae-437c-9f5a-106ec5663845"
+      ],
+      "spouses": [
+        "afc843d3-06f7-4ac8-a7fa-0e1fb08c1a51"
+      ]
+    }
+  },
+  {
+    "id": "1fed1985-ee17-4d6f-9417-659df4311393",
+    "data": {
+      "gender": "M",
+      "نام": "بابا 2",
+      "نام خانوادگی": "هرچه زاده",
+      "زاد روز": "1322",
+      "avatar": "",
+      "یاد داشت": "دارای دو همسر",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "مهندسی برق",
+      "جایگاه تحصیلی": "18"
+    },
+    "rels": {
+      "parents": [
+        "0",
+        "33f7b359-32d3-47cb-b989-bfafb3544cb9"
+      ],
+      "children": [
+        "75ed7103-85c0-4ddc-9995-2a5c4789dd41",
+        "71ddf0b5-1e90-492a-bd13-271825d7f9ae",
+        "18f60e79-4b68-4b45-b40b-d6836ebec910",
+        "9b6102f0-3b71-4ce1-bf1f-691e9e17caef"
+      ],
+      "spouses": [
+        "0fd2ae2a-dcfd-4c7e-9821-fb0a34e10e9c",
+        "8f510426-4327-4015-a6af-45c4e3b75f56"
+      ]
+    }
+  },
+  {
+    "id": "0fd2ae2a-dcfd-4c7e-9821-fb0a34e10e9c",
+    "data": {
+      "gender": "F",
+      "نام": "بی بی 1-1",
+      "نام خانوادگی": "تخلص زاده",
+      "زاد روز": "1324",
+      "avatar": "",
+      "یاد داشت": "با هنز بافندگی",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "سواد پایه",
+      "جایگاه تحصیلی": "4"
+    },
+    "rels": {
+      "children": [
+        "71ddf0b5-1e90-492a-bd13-271825d7f9ae",
+        "18f60e79-4b68-4b45-b40b-d6836ebec910",
+        "9b6102f0-3b71-4ce1-bf1f-691e9e17caef"
+      ],
+      "spouses": [
+        "1fed1985-ee17-4d6f-9417-659df4311393"
+      ]
+    }
+  },
+  {
+    "id": "8f510426-4327-4015-a6af-45c4e3b75f56",
+    "data": {
+      "gender": "F",
+      "نام": "بی بی 1-2",
+      "نام خانوادگی": "تخلصی",
+      "زاد روز": "1328",
+      "avatar": "",
+      "یاد داشت": "همسر د.م بابا2 هرچه زاده",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "توفاتا دبستان",
+      "جایگاه تحصیلی": "12"
+    },
+    "rels": {
+      "children": [
+        "75ed7103-85c0-4ddc-9995-2a5c4789dd41"
+      ],
+      "spouses": [
+        "1fed1985-ee17-4d6f-9417-659df4311393"
+      ]
+    }
+  },
+  {
+    "id": "75ed7103-85c0-4ddc-9995-2a5c4789dd41",
+    "data": {
+      "gender": "F",
+      "نام": "مادر 0-1",
+      "نام خانوادگی": "یگتن چیز زاده",
+      "زاد روز": "1340",
+      "avatar": "",
+      "یاد داشت": "زیبا",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "پرستاری",
+      "جایگاه تحصیلی": "14"
+    },
+    "rels": {
+      "parents": [
+        "1fed1985-ee17-4d6f-9417-659df4311393",
+        "8f510426-4327-4015-a6af-45c4e3b75f56"
+      ],
+      "spouses": [
+        "a281cd73-c802-4e76-b657-b225237039d0"
+      ]
+    }
+  },
+  {
+    "id": "71ddf0b5-1e90-492a-bd13-271825d7f9ae",
+    "data": {
+      "gender": "M",
+      "نام": "پدر 1-1-1",
+      "نام خانوادگی": "بابا زاده",
+      "زاد روز": "1340",
+      "avatar": "",
+      "یاد داشت": "با هوش",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "مهندسی برق",
+      "جایگاه تحصیلی": "18"
+    },
+    "rels": {
+      "parents": [
+        "0fd2ae2a-dcfd-4c7e-9821-fb0a34e10e9c",
+        "1fed1985-ee17-4d6f-9417-659df4311393"
+      ]
+    }
+  },
+  {
+    "id": "18f60e79-4b68-4b45-b40b-d6836ebec910",
+    "data": {
+      "gender": "M",
+      "نام": "پدر 1-1-2",
+      "نام خانوادگی": "بابا زاده",
+      "زاد روز": "1342",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "توفاتا دبستان",
+      "جایگاه تحصیلی": "11"
+    },
+    "rels": {
+      "parents": [
+        "1fed1985-ee17-4d6f-9417-659df4311393",
+        "0fd2ae2a-dcfd-4c7e-9821-fb0a34e10e9c"
+      ],
+      "children": [
+        "2dd7ed35-d477-4f5a-8a2c-0c319ae0ff59",
+        "f10396ab-1c86-4e15-978a-13dfba3f0311"
+      ],
+      "spouses": [
+        "78cc7ba3-8b97-4779-accb-05bee14830b9"
+      ]
+    }
+  },
+  {
+    "id": "9b6102f0-3b71-4ce1-bf1f-691e9e17caef",
+    "data": {
+      "gender": "F",
+      "نام": "مادر 2-1-1",
+      "نام خانوادگی": "بابا 2 زاده",
+      "زاد روز": "1345",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "کم سواد",
+      "جایگاه تحصیلی": "2"
+    },
+    "rels": {
+      "parents": [
+        "0fd2ae2a-dcfd-4c7e-9821-fb0a34e10e9c",
+        "1fed1985-ee17-4d6f-9417-659df4311393"
+      ]
+    }
+  },
+  {
+    "id": "971df12d-5e47-4fd4-a2e1-34524b028655",
+    "data": {
+      "gender": "F",
+      "نام": "مادر 1",
+      "نام خانوادگی": "هیچی",
+      "زاد روز": "1326",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "توفاتا دبستان",
+      "جایگاه تحصیلی": "10"
+    },
+    "rels": {
+      "children": [
+        "8c7bf231-15ab-4e68-9b2a-6b98ee90ba8a",
+        "3ac83f80-fa50-428a-88f0-d2e898e6de40"
+      ],
+      "spouses": [
+        "37f0a29d-a4f5-416a-a2c6-719f1b74478e"
+      ]
+    }
+  },
+  {
+    "id": "8c7bf231-15ab-4e68-9b2a-6b98ee90ba8a",
+    "data": {
+      "gender": "M",
+      "نام": "برادر 1",
+      "نام خانوادگی": "بینامی",
+      "زاد روز": "1344",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "سواد پایه",
+      "جایگاه تحصیلی": "7"
+    },
+    "rels": {
+      "parents": [
+        "37f0a29d-a4f5-416a-a2c6-719f1b74478e",
+        "971df12d-5e47-4fd4-a2e1-34524b028655"
+      ],
+      "children": [
+        "f52e9d03-6747-45d5-a3c5-85836a838e29"
+      ],
+      "spouses": [
+        "c5c5f077-c114-4f1b-9562-d6139e5995b3"
+      ]
+    }
+  },
+  {
+    "id": "3ac83f80-fa50-428a-88f0-d2e898e6de40",
+    "data": {
+      "gender": "F",
+      "نام": "خواهر 1",
+      "نام خانوادگی": "بینامی",
+      "زاد روز": "1342",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "مامایی",
+      "جایگاه تحصیلی": "15"
+    },
+    "rels": {
+      "parents": [
+        "37f0a29d-a4f5-416a-a2c6-719f1b74478e",
+        "971df12d-5e47-4fd4-a2e1-34524b028655"
+      ]
+    }
+  },
+  {
+    "id": "afc843d3-06f7-4ac8-a7fa-0e1fb08c1a51",
+    "data": {
+      "gender": "M",
+      "نام": "بابا مادر ",
+      "نام خانوادگی": "خانوادگی",
+      "زاد روز": "1318",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "سواد پایه",
+      "جایگاه تحصیلی": "4"
+    },
+    "rels": {
+      "children": [
+        "a1db2c06-87ae-437c-9f5a-106ec5663845"
+      ],
+      "spouses": [
+        "cf158fb8-200c-4397-8046-8eef01a4920e"
+      ]
+    }
+  },
+  {
+    "id": "a1db2c06-87ae-437c-9f5a-106ec5663845",
+    "data": {
+      "gender": "M",
+      "نام": "پدر 2",
+      "نام خانوادگی": "خانوادگی زاده",
+      "زاد روز": "1343",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "مهندس فضا",
+      "جایگاه تحصیلی": "16"
+    },
+    "rels": {
+      "parents": [
+        "cf158fb8-200c-4397-8046-8eef01a4920e",
+        "afc843d3-06f7-4ac8-a7fa-0e1fb08c1a51"
+      ]
+    }
+  },
+  {
+    "id": "78cc7ba3-8b97-4779-accb-05bee14830b9",
+    "data": {
+      "gender": "F",
+      "نام": "مادر 1-1-2",
+      "نام خانوادگی": "نام زاده",
+      "زاد روز": "1345",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "دادستانی",
+      "جایگاه تحصیلی": "16"
+    },
+    "rels": {
+      "children": [
+        "2dd7ed35-d477-4f5a-8a2c-0c319ae0ff59",
+        "f10396ab-1c86-4e15-978a-13dfba3f0311"
+      ],
+      "spouses": [
+        "18f60e79-4b68-4b45-b40b-d6836ebec910"
+      ]
+    }
+  },
+  {
+    "id": "2dd7ed35-d477-4f5a-8a2c-0c319ae0ff59",
+    "data": {
+      "gender": "M",
+      "نام": "برادر 2",
+      "نام خانوادگی": "بابایی",
+      "زاد روز": "1360",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "مهندس آب",
+      "جایگاه تحصیلی": "16"
+    },
+    "rels": {
+      "parents": [
+        "18f60e79-4b68-4b45-b40b-d6836ebec910",
+        "78cc7ba3-8b97-4779-accb-05bee14830b9"
+      ],
+      "children": [
+        "79546cac-65b1-4a25-8625-0de7c66f2074",
+        "6f1344a4-fd0d-46dd-b7ee-37cbc4fcf566"
+      ],
+      "spouses": [
+        "1d498a42-b56e-4a3c-b980-ce7621a9b146"
+      ]
+    }
+  },
+  {
+    "id": "f10396ab-1c86-4e15-978a-13dfba3f0311",
+    "data": {
+      "gender": "F",
+      "نام": "خواهر 2",
+      "نام خانوادگی": "بابایی",
+      "زاد روز": "1363",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "آمورش و پرورش",
+      "جایگاه تحصیلی": "16"
+    },
+    "rels": {
+      "parents": [
+        "18f60e79-4b68-4b45-b40b-d6836ebec910",
+        "78cc7ba3-8b97-4779-accb-05bee14830b9"
+      ]
+    }
+  },
+  {
+    "id": "a281cd73-c802-4e76-b657-b225237039d0",
+    "data": {
+      "gender": "M",
+      "نام": "پدر 3",
+      "نام خانوادگی": "هرچه زاده",
+      "زاد روز": "1340",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "آمورش و پرورش",
+      "جایگاه تحصیلی": "14"
+    },
+    "rels": {
+      "spouses": [
+        "75ed7103-85c0-4ddc-9995-2a5c4789dd41"
+      ]
+    }
+  },
+  {
+    "id": "1d498a42-b56e-4a3c-b980-ce7621a9b146",
+    "data": {
+      "gender": "F",
+      "نام": "ینگه 2",
+      "نام خانوادگی": "همسری",
+      "زاد روز": "1366",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "شیمی دان",
+      "جایگاه تحصیلی": "16"
+    },
+    "rels": {
+      "children": [
+        "79546cac-65b1-4a25-8625-0de7c66f2074",
+        "6f1344a4-fd0d-46dd-b7ee-37cbc4fcf566"
+      ],
+      "spouses": [
+        "2dd7ed35-d477-4f5a-8a2c-0c319ae0ff59"
+      ]
+    }
+  },
+  {
+    "id": "79546cac-65b1-4a25-8625-0de7c66f2074",
+    "data": {
+      "gender": "M",
+      "نام": "پسر 1",
+      "نام خانوادگی": "بابا نبار",
+      "زاد روز": "1380",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "توفاتا دبستان",
+      "جایگاه تحصیلی": "12"
+    },
+    "rels": {
+      "parents": [
+        "2dd7ed35-d477-4f5a-8a2c-0c319ae0ff59",
+        "1d498a42-b56e-4a3c-b980-ce7621a9b146"
+      ]
+    }
+  },
+  {
+    "id": "6f1344a4-fd0d-46dd-b7ee-37cbc4fcf566",
+    "data": {
+      "gender": "M",
+      "نام": "پسر 3",
+      "نام خانوادگی": "بابا تبار",
+      "زاد روز": "1381",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "وفات",
+      "رشته تحصیلی": "بیسواد",
+      "جایگاه تحصیلی": "0"
+    },
+    "rels": {
+      "parents": [
+        "2dd7ed35-d477-4f5a-8a2c-0c319ae0ff59",
+        "1d498a42-b56e-4a3c-b980-ce7621a9b146"
+      ]
+    }
+  },
+  {
+    "id": "c5c5f077-c114-4f1b-9562-d6139e5995b3",
+    "data": {
+      "gender": "F",
+      "نام": "ینگه 1",
+      "نام خانوادگی": "ینگه زاده",
+      "زاد روز": "1347",
+      "avatar": "",
+      "یاد داشت": "هنگام ازدواج با برادر 1 بینامی بیوه بود",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "توفاتا دبستان",
+      "جایگاه تحصیلی": "11"
+    },
+    "rels": {
+      "children": [
+        "f52e9d03-6747-45d5-a3c5-85836a838e29"
+      ],
+      "spouses": [
+        "8c7bf231-15ab-4e68-9b2a-6b98ee90ba8a"
+      ]
+    }
+  },
+  {
+    "id": "f52e9d03-6747-45d5-a3c5-85836a838e29",
+    "data": {
+      "gender": "F",
+      "نام": "دختر 1",
+      "نام خانوادگی": "بینام زاده",
+      "زاد روز": "1360",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "مدرسه دینی",
+      "جایگاه تحصیلی": "13"
+    },
+    "rels": {
+      "parents": [
+        "8c7bf231-15ab-4e68-9b2a-6b98ee90ba8a",
+        "c5c5f077-c114-4f1b-9562-d6139e5995b3"
+      ],
+      "children": [
+        "e5e396a4-3194-4ee6-8d94-fc189c8442f8"
+      ],
+      "spouses": [
+        "1e54a718-7d5b-43a9-9ab9-b8d3a44fab03"
+      ]
+    }
+  },
+  {
+    "id": "1e54a718-7d5b-43a9-9ab9-b8d3a44fab03",
+    "data": {
+      "gender": "M",
+      "نام": "داماد 1",
+      "نام خانوادگی": "دامادی",
+      "زاد روز": "1360",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "سواد پایه",
+      "جایگاه تحصیلی": "9"
+    },
+    "rels": {
+      "children": [
+        "e5e396a4-3194-4ee6-8d94-fc189c8442f8"
+      ],
+      "spouses": [
+        "f52e9d03-6747-45d5-a3c5-85836a838e29"
+      ]
+    }
+  },
+  {
+    "id": "e5e396a4-3194-4ee6-8d94-fc189c8442f8",
+    "data": {
+      "gender": "M",
+      "نام": "نواسه 1",
+      "نام خانوادگی": "داماد زاده",
+      "زاد روز": "1381",
+      "avatar": "",
+      "یاد داشت": "",
+      "زندگانی؟": "زنده",
+      "رشته تحصیلی": "آمورش و پرورش",
+      "جایگاه تحصیلی": "14"
+    },
+    "rels": {
+      "parents": [
+        "f52e9d03-6747-45d5-a3c5-85836a838e29",
+        "1e54a718-7d5b-43a9-9ab9-b8d3a44fab03"
+      ]
+    }
+  }
+];
 }
 
 
 </script>
+<footer class="floating-footer">
+ کپی رایت © <a id="cr_note" href="https://m.facebook.com/fared.baktashabdaly.1/">مهندس فرید بکتاش</a> 2026/1405 با ❤️ و پسران دهکده
+</footer>
 </body>
 </html>
